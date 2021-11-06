@@ -1,5 +1,7 @@
 package dynamic;
 
+import java.util.Arrays;
+
 public class Knapsack {
     //
     private int numOfItems;
@@ -36,6 +38,22 @@ public class Knapsack {
 
         totalBenefit = knapsackTable[numOfItems][capacityOfKnapsack];
     }
+    public int solveRecursion(int m, int[] w, int[] v, int n) {
+
+        // base cases
+        if(m==0 || n==0)
+            return 0;
+
+        // the given item can NOT fit into the knapsack
+        if(w[n-1] > m) {
+            return solveRecursion(m, w, v, n-1);
+        } else {
+            // given item can fit into the knapsack so we have 2 options (include, exclude)
+            int included = v[n-1] + solveRecursion(m - w[n - 1], w, v, n-1);
+            int excluded = solveRecursion(m, w, v, n-1);
+            return Math.max(included, excluded);
+        }
+    }
 
     public void showResult() {
 
@@ -66,7 +84,17 @@ public class Knapsack {
         profitOfItems[3] = 7;
 
         Knapsack knapsack = new Knapsack(numOfItems, capacityOfKnapsack, weightOfItems, profitOfItems);
-        knapsack.solve();
-        knapsack.showResult();
+//        knapsack.solve();
+//        knapsack.showResult();
+
+        System.out.println("------------");
+// here remove 0s
+        int [] wts = Arrays.copyOfRange(weightOfItems, 1, 4);
+        int [] values = Arrays.copyOfRange(profitOfItems, 1, 4);
+
+
+         knapsack.solveRecursion(capacityOfKnapsack,wts,values, numOfItems);
+         knapsack.showResult();
+
     }
 }
